@@ -21,7 +21,7 @@ const configuredNetwork = getTargetNetwork();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
-const enabledChains = [chains.arbitrumGoerli];
+const enabledChains = [chains.polygonMumbai, chains.sepolia];
 
 /**
  * Chains for the app
@@ -58,7 +58,7 @@ const wallets = [
     ? [burnerWalletConfig({ chains: [appChains.chains[0]] })]
     : []),
   safeWallet({ ...walletsOptions, debug: false, allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/] }),
-  rainbowWeb3AuthConnector({ chains: [chains.arbitrumGoerli] }),
+  rainbowWeb3AuthConnector({ chains: enabledChains }),
 ];
 
 /**
