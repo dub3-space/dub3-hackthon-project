@@ -3,6 +3,7 @@ import { Web3AuthNoModal } from "@web3auth/no-modal";
 import { OPENLOGIN_NETWORK, OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "viem";
+import * as wagmiChains from "wagmi/chains";
 
 const name = "Login with Google";
 const iconUrl =
@@ -24,18 +25,20 @@ export const rainbowWeb3AuthConnector = ({ chains }: { chains: Chain[] }) => {
   const CLIENT_ID = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID;
   const chainConfig: ChainConfig = {
     chainNamespace: "eip155",
-    chainId: "0x66eed",
-    rpcTarget: "https://goerli-rollup.arbitrum.io/rpc",
-    displayName: "Arbitrum Goerli",
-    blockExplorer: "https://goerli.arbiscan.io/",
-    ticker: "ETH",
-    tickerName: "Arbitrum Goerli Ether",
+    chainId: "0x13881",
+    rpcTarget: "https://rpc.ankr.com/polygon_mumbai",
+    // Avoid using public rpcTarget in production.
+    // Use services like Infura, Quicknode etc
+    displayName: "Polygon Mumbai",
+    blockExplorer: "https://mumbai.polygonscan.com/",
+    ticker: "MATIC",
+    tickerName: "MATIC",
   };
 
   const web3AuthInstance = new Web3AuthNoModal({
     clientId: CLIENT_ID as string,
     chainConfig: chainConfig as ChainConfig,
-    web3AuthNetwork: OPENLOGIN_NETWORK.SAPPHIRE_MAINNET,
+    web3AuthNetwork: OPENLOGIN_NETWORK.SAPPHIRE_DEVNET,
   });
 
   // Add openlogin adapter for customisations
@@ -51,6 +54,9 @@ export const rainbowWeb3AuthConnector = ({ chains }: { chains: Chain[] }) => {
       web3AuthInstance,
       loginParams: {
         loginProvider: "google",
+      },
+      modalConfig: {
+        chains: [wagmiChains.polygonMumbai, wagmiChains.sepolia],
       },
     },
   });
