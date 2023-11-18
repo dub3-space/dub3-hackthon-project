@@ -25,5 +25,8 @@ contract DestinationMinter is CCIPReceiver {
         (bool success, ) = address(nft).call(message.data);
         require(success);
         emit MintCallSuccessfull();
-    }
+    } //TODO: 
 }
+
+
+//TODO: mint nft from here
