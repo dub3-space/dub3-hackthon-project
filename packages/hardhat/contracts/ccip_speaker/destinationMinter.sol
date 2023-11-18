@@ -18,7 +18,7 @@ struct AllData{
 
 contract SpeakerNFT is ERC721URIStorage, Ownable {
     string constant TOKEN_URI =
-        "https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json";
+        "https://gateway.lighthouse.storage/ipfs/QmcRXYN3kNHYyxkJHYEvd84twchVyc8N2oNa4j7vMwR1om%5C";
     uint256 internal tokenId;
 
     // Mapping from token ID to CID of the IPFS file
@@ -36,7 +36,7 @@ contract SpeakerNFT is ERC721URIStorage, Ownable {
 
     // Mapping from address to the number of NFTs owned
     mapping(address => uint256) private _balanceOf;
-    constructor() ERC721("SPEAKERNFT", "SPKR") {}
+    constructor() ERC721("SPEAKERNFT", "SPKR") Ownable(msg.sender){}
 
     function mint(address to,string memory _cid, string memory _audioScript, uint256 _audioPrice) public {
         _safeMint(to, tokenId);
