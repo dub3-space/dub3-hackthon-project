@@ -1,3 +1,4 @@
+import io
 from os import environ
 import logging
 import requests
@@ -7,6 +8,7 @@ import numpy as np
 import struct
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
+from scipy.io.wavfile import write
  
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
@@ -24,49 +26,53 @@ def handle_advance(data):
 
     parsed_data = json.loads(payload)
 
-    sample_data = parsed_data["sample"]
+    sample_url = parsed_data["sample"]
 
-    logger.info(sample_data)
+    logger.info(sample_url)
 
-    # sample_array = np.array(sample_data, dtype=np.int16)
+    response = requests.get(sample_url)
 
-    # logger.info(sample_array)
+    if response.status_code == 200:
+    # Get the content of the response
+        audio_content = response.content
+        
+        file_path = "downloaded_audio.wav"  # Change the file extension if the audio is in a different format
+        
+        # Save the downloaded file
+        with open(file_path, "wb") as file:
+            file.write(audio_content)
+            
+        logger.info(f"File saved as '{file_path}'")
+    else:
+        logger.error("Failed to download the file.")
 
-    # Open a WAV file in write mode
-    # with wave.open('tmp_sample.wav', 'w') as wav_file:
-    #     # Set parameters for the WAV file
-    #     channels = 1
-    #     sample_width = 2
-    #     framerate = 44100
+    speech_data = parsed_data['speech']
 
-    #     wav_file.setparams((channels, sample_width, framerate, 0, 'NONE', 'not compressed'))
+    logger.info('This is a speech ' + speech_data)
 
-    #     # Write the sample data to the WAV file
-    #     for sample in sample_array:
-    #         packed_sample = struct.pack('<h', sample)  # Pack the int16 value as little-endian
-    #         wav_file.writeframes(packed_sample)
+    #Here we need to inference here.......
+    config = XttsConfig()
+    config.load_json("model/config.json")
+    model = Xtts.init_from_config(config)
+    model.load_checkpoint(config, checkpoint_dir="model/", eval=True)
 
-    # speech_data = parsed_data['speech']
+    try:
+        outputs = model.synthesize(
+            speech_data,
+            config,
+            speaker_wav="downloaded_audio.wav",
+            gpt_cond_len=3,
+            language="en",
+        )
+        scaled = np.int16(outputs['wav'] * 32767)
 
-    # logger.info('This is a speech ' + speech_data)
+        # Set the sample rate (you'll need to know the sample rate of the audio)
+        sample_rate = 44100  # For example, 44100 Hz
 
-    # #Here we need to inference here.......
-    # config = XttsConfig()
-    # config.load_json("model/config.json")
-    # model = Xtts.init_from_config(config)
-    # model.load_checkpoint(config, checkpoint_dir="model/", eval=True)
-
-    # try:
-    #     outputs = model.synthesize(
-    #         speech_data,
-    #         config,
-    #         speaker_wav="tmp_sample.wav",
-    #         gpt_cond_len=3,
-    #         language="en",
-    #     )
-    #     print(outputs)
-    # except Exception as e:
-    #     logger.error(e)
+        # Save as a WAV file
+        write('output.wav', sample_rate // 2, scaled)
+    except Exception as e:
+        logger.error(e)
 
     # notice = {
     #     "output": 
@@ -112,4 +118,3 @@ def main_loop():
 
 if __name__ == '__main__':
     main_loop()
-        
