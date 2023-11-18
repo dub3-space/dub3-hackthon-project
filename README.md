@@ -17,25 +17,6 @@ The goal of this project is to enable users to upload their voice samples, which
 3. **IPFS Upload:** The synthesized voice is uploaded to IPFS, ensuring decentralized storage and accessibility.
 4. **NFT Minting:** An NFT is created from the synthesized voice, serving as a unique identifier and usable for text-to-speech functionality.
 
-## Getting Started 🎉
-
-To use this application, follow these steps:
-
-1. Clone the repository: `git clone https://github.com/yourusername/your-repo.git`
-2. Install dependencies: `npm install`
-3. Set up the Cartesi environment and IPFS integration (provide detailed instructions if necessary).
-4. Run the application and follow the prompts to upload your voice sample.
-
-## Requirements 🛠️
-
-- Node.js
-- Cartesi environment setup
-- IPFS integration
-
-## Contributions 🤝
-
-Contributions are welcome! If you'd like to contribute to this project, please open an issue or submit a pull request. See our contribution guidelines for more details.
-
 ## License 📝
 
 This project is licensed under the [MIT License](link-to-license).
