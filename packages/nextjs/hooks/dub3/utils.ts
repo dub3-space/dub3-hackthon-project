@@ -5,7 +5,7 @@ import { abi as sourceMinterAbi } from "./sourceMinterABI";
 
 export const ContractsAndAbis = {
   SpeakerNFT: {
-    address: "0xB31B82CDF32ce766E7acB943565347383Ac9ec26",
+    address: "0x938049a537939AC054FFF6E0CafCe39D726BDd9c",
     abi: speakerAbi,
   },
   BuyerNFT: {
