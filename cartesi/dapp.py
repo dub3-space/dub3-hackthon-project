@@ -1,14 +1,17 @@
-import io
 from os import environ
 import logging
+import os
+from dotenv import load_dotenv
 import requests
 import json
 import wave
 import numpy as np
-import struct
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
 from scipy.io.wavfile import write
+from pinatapy import PinataPy
+
+load_dotenv()
  
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
@@ -41,8 +44,16 @@ def handle_advance(data):
         # Save the downloaded file
         with open(file_path, "wb") as file:
             file.write(audio_content)
-            
+
         logger.info(f"File saved as '{file_path}'")
+
+        try:
+            with wave.open(file_path, "rb") as wave_file:
+                frame_rate = wave_file.getframerate()
+                logger.info(f"Frame rate of input audio: {frame_rate}")
+        except Exception as e:
+            logger.error(f"Cannot detect frame rate from input audio.... Error: {e}")
+
     else:
         logger.error("Failed to download the file.")
 
@@ -50,7 +61,6 @@ def handle_advance(data):
 
     logger.info('This is a speech ' + speech_data)
 
-    #Here we need to inference here.......
     config = XttsConfig()
     config.load_json("model/config.json")
     model = Xtts.init_from_config(config)
@@ -66,13 +76,18 @@ def handle_advance(data):
         )
         scaled = np.int16(outputs['wav'] * 32767)
 
-        # Set the sample rate (you'll need to know the sample rate of the audio)
-        sample_rate = 44100  # For example, 44100 Hz
+        sample_rate = 44100
 
-        # Save as a WAV file
         write('output.wav', sample_rate // 2, scaled)
     except Exception as e:
         logger.error(e)
+
+    api_key = os.environ.get("PINATA_API_KEY")
+    secret_key = os.environ.get("PINATA_SECRET_API_KEY")
+    if api_key and secret_key:
+        pinata = PinataPy(api_key, secret_key)
+        resp = pinata.pin_file_to_ipfs('output.wav')
+        print(resp['IpfsHash'])
 
     # notice = {
     #     "output": 
@@ -118,3 +133,4 @@ def main_loop():
 
 if __name__ == '__main__':
     main_loop()
+        
