@@ -133,24 +133,34 @@ export const abi = [
         type: "address",
       },
       {
-        internalType: "string",
-        name: "_cid",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_audioScript",
-        type: "string",
-      },
-      {
         internalType: "uint256",
-        name: "_audioPrice",
+        name: "speakerTokenId",
         type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "cid",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "speakerAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "buyerAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "script",
+        type: "string",
       },
     ],
     name: "mint",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -433,36 +443,6 @@ export const abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getAll",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "address",
-            name: "speaker",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "cId",
-            type: "string",
-          },
-        ],
-        internalType: "struct AllData[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -476,6 +456,59 @@ export const abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tknId",
+        type: "uint256",
+      },
+    ],
+    name: "getNFTMetadata",
+    outputs: [
+      {
+        internalType: "string",
+        name: "cid",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "speakerAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "buyerAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "script",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "otherContractTokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getPriceOfOtherContract",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -551,38 +584,13 @@ export const abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "price",
+    inputs: [],
+    name: "speakerNFTAddress",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "address",
         name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "script",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
+        type: "address",
       },
     ],
     stateMutability: "view",

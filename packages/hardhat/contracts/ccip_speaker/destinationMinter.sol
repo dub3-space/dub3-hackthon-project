@@ -18,7 +18,7 @@ struct AllData{
 
 contract SpeakerNFT is ERC721URIStorage, Ownable {
     string constant TOKEN_URI =
-        "https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json";
+        "https://gateway.lighthouse.storage/ipfs/QmcRXYN3kNHYyxkJHYEvd84twchVyc8N2oNa4j7vMwR1om%5C";
     uint256 internal tokenId;
 
     // Mapping from token ID to CID of the IPFS file
