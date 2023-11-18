@@ -56,7 +56,7 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
     function tokenIDs(address speaker) external view returns (uint256[] memory) {
         return _tokenIDs[speaker];
     }
-    function getNFTMetadata(uint256 tokenId)
+    function getNFTMetadata(uint256 tknId)
         public
         view
         returns (
@@ -66,7 +66,7 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
             string memory script
         )
     {
-        NFTMetadata storage metadata = nftMetadata[tokenId];
+        NFTMetadata storage metadata = nftMetadata[tknId];
         return (
             metadata.cid,
             metadata.speakerAddress,

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
+import { polygonMumbai } from "@wagmi/core/chains";
 import { LoaderIcon } from "react-hot-toast";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount, useContractWrite, useNetwork } from "wagmi";
 import { ContractsAndAbis } from "~~/hooks/dub3/utils";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -12,14 +13,19 @@ export const Recorder = () => {
   const [price, setPrice] = useState("");
   const [cid, setCid] = useState("");
   const { address: to, isDisconnected } = useAccount();
-
+  const { chain } = useNetwork();
+  const destinationChainSelector = "12532609583862916517";
+  const receiver = "0xF0228036FC21aD442250d4c887F492c50b5A3A37";
+  const payFeesIn = 1;
   const SAMPLE_TEXT =
-    " Unlock new possibilities with cutting-edge technology. Experience innovation at your fingertips. Embrace                the future today.";
-
-  // const { ...writeHook } = useDub3Contract({ contractName: "SpeakerNFT", functionName: "mint" });
+    "Unlock new possibilities with cutting-edge technology. Experience innovation at your fingertips. Embrace the future today.";
+  console.log(chain);
   const { data, isSuccess, write } = useContractWrite({
-    address: ContractsAndAbis.SpeakerNFT.address,
-    abi: ContractsAndAbis.SpeakerNFT.abi,
+    address:
+      chain?.id == polygonMumbai.id ? ContractsAndAbis.SpeakerNFT.address : ContractsAndAbis.SourceMinter.address,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    abi: chain?.id == polygonMumbai.id ? ContractsAndAbis.SpeakerNFT.abi : ContractsAndAbis.SourceMinter.abi,
     functionName: "mint",
   });
 
@@ -65,7 +71,10 @@ export const Recorder = () => {
     }
     console.log(ContractsAndAbis.SpeakerNFT.abi);
     write({
-      args: [to, cid, SAMPLE_TEXT, 0], // to, cid,audioscript,audioprice
+      args:
+        chain?.id == polygonMumbai.id
+          ? [to, cid, SAMPLE_TEXT, 0]
+          : [destinationChainSelector, receiver, payFeesIn, cid, SAMPLE_TEXT, 0], // to, cid,audioscript,audioprice
     });
   };
   return (
