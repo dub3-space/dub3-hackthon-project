@@ -1,12 +1,17 @@
 from os import environ
 import logging
+import os
+from dotenv import load_dotenv
 import requests
 import json
 import wave
 import numpy as np
-import struct
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
+from scipy.io.wavfile import write
+from pinatapy import PinataPy
+
+load_dotenv()
  
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
@@ -14,67 +19,104 @@ logger = logging.getLogger(__name__)
 rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
 logger.info(f"HTTP rollup_server url is {rollup_server}")
 
+def str2hex(str):
+    """
+    Encodes a string as a hex string
+    """
+    return "0x" + str.encode("utf-8").hex()
+
 def handle_advance(data):
-    logger.info(f"Received advance request data {data}")
-    logger.info(data["payload"])
+    try: 
+        logger.info(f"Received advance request data {data}")
+        logger.info(data["payload"])
 
-    payload = bytes.fromhex(data["payload"][2:]).decode('utf-8')
+        payload = bytes.fromhex(data["payload"][2:]).decode('utf-8')
 
-    logger.info('decoded payload\n' + payload)
+        logger.info('decoded payload\n' + payload)
 
-    parsed_data = json.loads(payload)
+        parsed_data = json.loads(payload)
 
-    sample_data = parsed_data["sample"]
+        sample_url = parsed_data["sample"]
 
-    logger.info(sample_data)
+        logger.info(sample_url)
 
-    # sample_array = np.array(sample_data, dtype=np.int16)
+        response = requests.get(sample_url)
 
-    # logger.info(sample_array)
+        if response.status_code == 200:
+        # Get the content of the response
+            audio_content = response.content
+            
+            file_path = "downloaded_audio.wav"  # Change the file extension if the audio is in a different format
+            
+            # Save the downloaded file
+            with open(file_path, "wb") as file:
+                file.write(audio_content)
 
-    # Open a WAV file in write mode
-    # with wave.open('tmp_sample.wav', 'w') as wav_file:
-    #     # Set parameters for the WAV file
-    #     channels = 1
-    #     sample_width = 2
-    #     framerate = 44100
+            logger.info(f"File saved as '{file_path}'")
 
-    #     wav_file.setparams((channels, sample_width, framerate, 0, 'NONE', 'not compressed'))
+            try:
+                with wave.open(file_path, "rb") as wave_file:
+                    frame_rate = wave_file.getframerate()
+                    logger.info(f"Frame rate of input audio: {frame_rate}")
+                    num_channels = wave_file.getnchannels()
+                    logger.info(num_channels)
+            except Exception as e:
+                logger.error(f"Cannot detect frame rate from input audio.... Error: {e}")
 
-    #     # Write the sample data to the WAV file
-    #     for sample in sample_array:
-    #         packed_sample = struct.pack('<h', sample)  # Pack the int16 value as little-endian
-    #         wav_file.writeframes(packed_sample)
+        else:
+            logger.error("Failed to download the file.")
 
-    # speech_data = parsed_data['speech']
+        speech_data = parsed_data['speech']
+        output_lang = parsed_data['output_lang']
 
-    # logger.info('This is a speech ' + speech_data)
+        logger.info('This is a speech ' + speech_data)
 
-    # #Here we need to inference here.......
-    # config = XttsConfig()
-    # config.load_json("model/config.json")
-    # model = Xtts.init_from_config(config)
-    # model.load_checkpoint(config, checkpoint_dir="model/", eval=True)
+        config = XttsConfig()
+        config.load_json("model/config.json")
+        model = Xtts.init_from_config(config)
+        model.load_checkpoint(config, checkpoint_dir="model/", eval=True)
 
-    # try:
-    #     outputs = model.synthesize(
-    #         speech_data,
-    #         config,
-    #         speaker_wav="tmp_sample.wav",
-    #         gpt_cond_len=3,
-    #         language="en",
-    #     )
-    #     print(outputs)
-    # except Exception as e:
-    #     logger.error(e)
+        try:
+            outputs = model.synthesize(
+                speech_data,
+                config,
+                speaker_wav="downloaded_audio.wav",
+                language=output_lang
+            )
 
-    # notice = {
-    #     "output": 
-    # }
-    # response = requests.post(rollup_server + "/notice", json=finish)
+            scaled = np.int16(outputs['wav'] * 32767)
 
-    #Then, give the output! Create a Notice for that
-    return "accept"
+            sample_rate = 44100
+            output_sample_rate = sample_rate // 2
+
+            write('output.wav', output_sample_rate, scaled)
+
+            try:
+                with wave.open('output.wav', "rb") as wave_file:
+                    frame_rate = wave_file.getframerate()
+                    logger.info(f"Frame rate of input audio: {frame_rate}")
+                    num_channels = wave_file.getnchannels()
+                    logger.info(num_channels)
+            except Exception as e:
+                logger.error(f"Cannot detect frame rate from input audio.... Error: {e}")
+
+        except Exception as e:
+            logger.error(e)
+
+        api_key = os.environ.get("PINATA_API_KEY")
+        secret_key = os.environ.get("PINATA_SECRET_API_KEY")
+        if api_key and secret_key:
+            pinata = PinataPy(api_key, secret_key)
+            resp = pinata.pin_file_to_ipfs(f'output.wav')
+            print(resp['IpfsHash'])
+
+        payloadToSent = resp['IpfsHash']
+        response = requests.post(rollup_server + "/notice", json={"payload": str2hex(payloadToSent)})
+        logger.info(f"Received notice status {response.status_code} body {response.content}")
+
+        return "accept"
+    except Exception as e:
+        logger.error(e)
 
 def handle_inspect(data):
     logger.info(f"Received inspect request data {data}")
@@ -112,4 +154,3 @@ def main_loop():
 
 if __name__ == '__main__':
     main_loop()
-        

@@ -1,3 +1,5 @@
 --find-links https://felipefg.github.io/pip-wheels-riscv/wheels/
 TTS===0.20.6
 requests == 2.31.0
+python-dotenv==0.20.0
+pinatapy-vourhey
