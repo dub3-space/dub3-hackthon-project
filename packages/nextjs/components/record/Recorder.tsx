@@ -35,7 +35,7 @@ export const Recorder = () => {
 
   return (
     <div className="p-4">
-      {fileUploaded || true ? ( //TODO remove, jsut for developmnenrt
+      {fileUploaded ? ( //TODO remove, jsut for developmnenrt
         <>
           <div className="flex flex-col items-center justify-center max-w-sm text-black">
             <input
@@ -52,15 +52,22 @@ export const Recorder = () => {
         </>
       ) : (
         <>
-          <input onChange={e => setFile(e.target.files)} type="file" className="mt-4" />
           {isUploadLoading ? (
             <div className="flex items-center justify-center">
               <LoaderIcon />
             </div>
           ) : (
-            <button className="btn btn-secondary btn-sm" onClick={() => uploadFile(file)}>
-              Upload
-            </button>
+            <>
+              <div className="text-green-500 font-bold">Read this sentence and upload the audio:</div>
+              <div className="text-red-500 font-bold">
+                Unlock new possibilities with cutting-edge technology. Experience innovation at your fingertips. Embrace
+                the future today.
+              </div>
+              <input onChange={e => setFile(e.target.files)} type="file" className="mt-4" />
+              <button className="btn btn-secondary btn-sm" onClick={() => uploadFile(file)}>
+                Upload
+              </button>
+            </>
           )}
         </>
       )}
