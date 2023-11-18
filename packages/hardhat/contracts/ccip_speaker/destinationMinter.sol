@@ -36,7 +36,7 @@ contract SpeakerNFT is ERC721URIStorage, Ownable {
 
     // Mapping from address to the number of NFTs owned
     mapping(address => uint256) private _balanceOf;
-    constructor() ERC721("SPEAKERNFT", "SPKR") Ownable(msg.sender){}
+    constructor() ERC721("SPEAKERNFT", "SPKR") {}
 
     function mint(address to,string memory _cid, string memory _audioScript, uint256 _audioPrice) public {
         _safeMint(to, tokenId);

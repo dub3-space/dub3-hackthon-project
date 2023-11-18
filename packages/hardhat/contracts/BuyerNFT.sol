@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./speakerNFT.sol";
+import "./SpeakerNFT.sol";
 
 contract BuyerNFT is ERC721URIStorage, Ownable {
 
@@ -19,11 +19,10 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
     mapping(address => uint256[]) private _tokenIDs;
     mapping(uint256 => NFTMetadata) private nftMetadata;
 
-    // Mapping from token ID to CID of the IPFS file
-    mapping(address => uint256[]) private _tokenIDs;
-    address public speakerNFTAddress = 0xB31B82CDF32ce766E7acB943565347383Ac9ec26;
 
-    constructor() ERC721("BuyerNFT", "BNFT") Ownable(msg.sender){
+    address public speakerNFTAddress = 0x938049a537939AC054FFF6E0CafCe39D726BDd9c;
+
+    constructor() ERC721("BuyerNFT", "BNFT") {
 
     }
 

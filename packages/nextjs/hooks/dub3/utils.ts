@@ -5,6 +5,18 @@ export const ContractsAndAbis = {
     address: "0xB31B82CDF32ce766E7acB943565347383Ac9ec26",
     abi: abi,
   },
+  BuyerNFT: {
+    address: "0x59087174Dd6F511C73e62618DaeE710F2db0819F",
+    abi: abi,
+  },
+  SourceMinter: {
+    address: "0x7e28Bca799F90AB6e8264E93B123cE9990987567",
+    abi: abi,
+  },
+  DestinationMinter: {
+    address: "0xF0228036FC21aD442250d4c887F492c50b5A3A37",
+    abi: abi,
+  },
 };
 
 export type UseMintSpeakerNFT = {

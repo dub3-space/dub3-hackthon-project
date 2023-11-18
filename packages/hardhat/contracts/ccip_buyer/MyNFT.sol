@@ -24,7 +24,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
 
     // Mapping from address to the number of NFTs owned
     mapping(address => uint256) private _balanceOf;
-    constructor() ERC721("SPEAKERNFT", "SPKR") Ownable(msg.sender){}
+    constructor() ERC721("SPEAKERNFT", "SPKR") {}
 
     function mint(address to,string memory cid, string memory _speakerName, string memory _scriptByte) public {
         _safeMint(to, tokenId);
