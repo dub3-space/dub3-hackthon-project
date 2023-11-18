@@ -33,14 +33,14 @@ contract SourceMinter is Withdraw {
     function mint (
         uint64 destinationChainSelector,
         address receiver,
-        PayFeesIn payFeesIn,
+        PayFeesIn payFeesIn,   
         string memory cID,
-        string memory name,
-        string memory script
+        string memory _audioScript,
+        uint256 _audioPrice
     ) external {
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
             receiver: abi.encode(receiver),
-            data: abi.encodeWithSignature("mint(address,string,string,string)",msg.sender,cID,name,script),
+            data: abi.encodeWithSignature("mint(address,string,string,uint256)",msg.sender,cID,_audioScript,_audioPrice),
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
                 Client.EVMExtraArgsV1({gasLimit: 1000000, strict: false})
