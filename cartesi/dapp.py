@@ -67,6 +67,7 @@ def handle_advance(data):
             logger.error("Failed to download the file.")
 
         speech_data = parsed_data['speech']
+        output_lang = parsed_data['output_lang']
 
         logger.info('This is a speech ' + speech_data)
 
@@ -80,7 +81,7 @@ def handle_advance(data):
                 speech_data,
                 config,
                 speaker_wav="downloaded_audio.wav",
-                language='it'
+                language=output_lang
             )
 
             scaled = np.int16(outputs['wav'] * 32767)
@@ -153,4 +154,3 @@ def main_loop():
 
 if __name__ == '__main__':
     main_loop()
-        
