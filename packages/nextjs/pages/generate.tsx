@@ -1,28 +1,9 @@
-import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import { useContractRead } from "wagmi";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
-import Table from "~~/components/explore/Table";
-import { ContractsAndAbis } from "~~/hooks/dub3/utils";
+import { GenerateOutput } from "~~/components/explore";
 
-const ExplorerPage: NextPage = () => {
-  const [data, setData] = useState<any[]>();
-  const {
-    data: readData,
-    // isSuccess,
-    // error,
-  } = useContractRead({
-    address: ContractsAndAbis.SpeakerNFT.address,
-    abi: ContractsAndAbis.SpeakerNFT.abi,
-    functionName: "getAll",
-  });
-
-  useEffect(() => {
-    console.log("readData", readData);
-    setData(readData as any[]);
-  }, [readData]);
-
+const GeneratePage: NextPage = () => {
   return (
     <>
       <MetaHeader />
@@ -38,8 +19,8 @@ const ExplorerPage: NextPage = () => {
           <div className="flex justify-center items-center">
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center">
               <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>Explore Speakers</p>
-              <Table data={data as any[]} />
+              <p>Generate</p>
+              <GenerateOutput />
             </div>
           </div>
         </div>
@@ -48,4 +29,4 @@ const ExplorerPage: NextPage = () => {
   );
 };
 
-export default ExplorerPage;
+export default GeneratePage;

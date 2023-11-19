@@ -3,7 +3,7 @@ import { MicrophoneIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { Recorder } from "~~/components/record";
 
-const Home: NextPage = () => {
+const Record: NextPage = () => {
   return (
     <>
       <MetaHeader />
@@ -55,4 +55,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Record;
