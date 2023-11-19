@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 // import { inputBoxAbi } from "./resources";
 import { ethers } from "ethers";
 // import { useContractWrite } from "wagmi";
@@ -111,11 +112,27 @@ const inputBoxAbi = [
   },
 ];
 
-export const Explorer = () => {
-  const [input, setInput] = useState<string>();
+export const GenerateOutput = () => {
+  const [input, setInput] = useState<string | any>();
   const [provider, setProvider] = useState<ethers.JsonRpcProvider>();
   const [signer, setSigner] = useState<ethers.JsonRpcSigner>();
   const [InputContract, setContract] = useState<ethers.Contract>();
+
+  const searchParams = useSearchParams();
+
+  const address = searchParams.get("address");
+  const tokenId = searchParams.get("tokenId");
+  const cid = searchParams.get("cid");
+
+  useEffect(() => {
+    console.log(address, tokenId, cid);
+    const input = {
+      sample: `https://gateway.lighthouse.storage/ipfs/${cid}`,
+      speech: "TOday I'm happy!! and I want to win ETHGlobal Istanbul!",
+      output_lang: "it",
+    };
+    setInput(input);
+  }, [address, tokenId, cid]);
 
   useEffect(() => {
     // Connect to an Ethereum node
@@ -147,7 +164,7 @@ export const Explorer = () => {
     try {
       console.log(inputBoxAbi);
       const mrinoDapp = "0x70ac08179605af2d9e75782b8decdd3c22aa4d0c";
-      const payload = ethers.toUtf8Bytes(input as string);
+      const payload = ethers.toUtf8Bytes(JSON.stringify(input));
       const tx = await InputContract?.addInput(mrinoDapp, payload);
       console.log("string to send", "hello!");
       console.log(tx);
@@ -163,23 +180,18 @@ export const Explorer = () => {
   return (
     <div className="p-4">
       <div className="flex flex-col items-center justify-center max-w-sm text-black">
-        {/* <textarea
-          placeholder={`Enter Your Script`}
-          value={1}
-          onChange={e => setPrice(e.target.value)}
-          className="mt-4 p-2 border border-gray-300 rounded"
-        /> */}
         <p>Mock Call To Cartesi VM!</p>
-        <div>
-          Send Input <br />
-          Input:{" "}
-          <textarea
-            // type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-          />
-          <button onClick={() => parseInputAndSendTx()} className="mt-2 bg-blue-500 text-white p-2 rounded">
-            Submit
+        <div className="flex flex-col">
+          <div>
+            {
+              <div>
+                <strong>speech:</strong> {input?.speech}
+              </div>
+            }
+          </div>
+          <br />
+          <button onClick={() => parseInputAndSendTx()} className="bg-blue-500 text-white p-2 rounded">
+            Generate AI speech from Real voice
           </button>
         </div>
       </div>

@@ -17,6 +17,14 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "Home",
     href: "/",
   },
+  {
+    label: "Record Voice Sample",
+    href: "/record",
+  },
+  {
+    label: "Explore",
+    href: "/explore",
+  },
 ];
 
 export const HeaderMenuLinks = () => {
